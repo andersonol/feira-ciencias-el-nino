@@ -34,7 +34,11 @@ export default function App() {
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem('elnino_ranking');
-        if (saved) return JSON.parse(saved);
+        if (saved) {
+          const parsed = JSON.parse(saved) as RankingEntry[];
+          const seedNames = ['beatriz almeida', 'lucas vasconcelos', 'mariana duarte', 'rafael guimarães', 'rafael guimaraes', 'camila siqueira'];
+          return parsed.filter((r) => !seedNames.includes(r.name.trim().toLowerCase()) && !r.deviceFingerprint?.startsWith('seed_'));
+        }
       } catch {
         // fallback
       }
@@ -203,7 +207,6 @@ export default function App() {
             onFinishQuiz={handleFinishQuiz}
             onGoToRanking={() => setCurrentTab('ranking')}
             onBackToMap={() => setCurrentTab('efeito')}
-            onOpenAdmin={() => setShowAdminModal(true)}
           />
         )}
 
@@ -212,7 +215,6 @@ export default function App() {
             ranking={ranking}
             onStartQuiz={() => handleSelectTab('quiz')}
             onBackToMap={() => setCurrentTab('efeito')}
-            onOpenAdmin={() => setShowAdminModal(true)}
           />
         )}
 
@@ -221,8 +223,8 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer with admin access */}
-      <Footer onOpenAdmin={() => setShowAdminModal(true)} />
+      {/* Footer with info */}
+      <Footer />
 
       {/* Mobile Fixed Bottom Navigation Bar ("Início", "Quiz", "Ranking", "Sobre nós") */}
       <MobileBottomNav

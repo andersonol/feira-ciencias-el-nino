@@ -323,10 +323,4 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   }
 ];
 
-export const INITIAL_RANKING: RankingEntry[] = [
-  { id: '1', name: 'Beatriz Almeida', score: 9, totalQuestions: 9, timeSeconds: 68, date: '30/10/2026', schoolGrade: '3º Ano E.M.', deviceFingerprint: 'seed_device_1' },
-  { id: '2', name: 'Lucas Vasconcelos', score: 9, totalQuestions: 9, timeSeconds: 79, date: '30/10/2026', schoolGrade: '2º Ano E.M.', deviceFingerprint: 'seed_device_2' },
-  { id: '3', name: 'Mariana Duarte', score: 8, totalQuestions: 9, timeSeconds: 62, date: '30/10/2026', schoolGrade: '1º Ano E.M.', deviceFingerprint: 'seed_device_3' },
-  { id: '4', name: 'Rafael Guimarães', score: 8, totalQuestions: 9, timeSeconds: 74, date: '30/10/2026', schoolGrade: '3º Ano E.M.', deviceFingerprint: 'seed_device_4' },
-  { id: '5', name: 'Camila Siqueira', score: 7, totalQuestions: 9, timeSeconds: 85, date: '30/10/2026', schoolGrade: '9º Ano E.F.', deviceFingerprint: 'seed_device_5' }
-];
+export const INITIAL_RANKING: RankingEntry[] = [];

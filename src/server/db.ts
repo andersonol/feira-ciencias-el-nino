@@ -40,10 +40,21 @@ export function initDatabase() {
     CREATE INDEX IF NOT EXISTS idx_ranking_device ON ranking(device_fingerprint);
   `);
 
-  // Seed default ranking if table is empty
-  const countRow = db.prepare('SELECT COUNT(*) as count FROM ranking').get() as { count: number };
-  if (countRow.count === 0) {
-    seedInitialRanking();
+  // Remove any previously seeded default names to guarantee clean start
+  try {
+    db.prepare(`
+      DELETE FROM ranking 
+      WHERE LOWER(TRIM(name)) IN (
+        'beatriz almeida', 
+        'lucas vasconcelos', 
+        'mariana duarte', 
+        'rafael guimarães', 
+        'rafael guimaraes',
+        'camila siqueira'
+      ) OR device_fingerprint LIKE 'seed_%'
+    `).run();
+  } catch (err) {
+    console.warn('[SQLite] Cleanup default names error:', err);
   }
 }
 
@@ -60,26 +71,7 @@ export interface DbRankingRow {
 }
 
 export function seedInitialRanking() {
-  const seeds = [
-    { name: 'Beatriz Almeida', score: 9, totalQuestions: 9, timeSeconds: 68, date: '30/10/2026', schoolGrade: '3º Ano E.M.', deviceFingerprint: 'seed_device_1' },
-    { name: 'Lucas Vasconcelos', score: 9, totalQuestions: 9, timeSeconds: 79, date: '30/10/2026', schoolGrade: '2º Ano E.M.', deviceFingerprint: 'seed_device_2' },
-    { name: 'Mariana Duarte', score: 8, totalQuestions: 9, timeSeconds: 62, date: '30/10/2026', schoolGrade: '1º Ano E.M.', deviceFingerprint: 'seed_device_3' },
-    { name: 'Rafael Guimarães', score: 8, totalQuestions: 9, timeSeconds: 74, date: '30/10/2026', schoolGrade: '3º Ano E.M.', deviceFingerprint: 'seed_device_4' },
-    { name: 'Camila Siqueira', score: 7, totalQuestions: 9, timeSeconds: 85, date: '30/10/2026', schoolGrade: '9º Ano E.F.', deviceFingerprint: 'seed_device_5' }
-  ];
-
-  const insertSeed = db.prepare(`
-    INSERT INTO ranking (name, score, total_questions, time_seconds, date, school_grade, device_fingerprint)
-    VALUES (@name, @score, @totalQuestions, @timeSeconds, @date, @schoolGrade, @deviceFingerprint)
-  `);
-
-  const insertMany = db.transaction((items) => {
-    for (const item of items) {
-      insertSeed.run(item);
-    }
-  });
-
-  insertMany(seeds);
+  // Predefined names removed - table starts empty until real participants play
 }
 
 export function getAllRanking() {

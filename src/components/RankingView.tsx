@@ -21,14 +21,13 @@ interface RankingViewProps {
   ranking: RankingEntry[];
   onStartQuiz: () => void;
   onBackToMap: () => void;
-  onOpenAdmin: () => void;
+  onOpenAdmin?: () => void;
 }
 
 export const RankingView: React.FC<RankingViewProps> = ({
   ranking,
   onStartQuiz,
   onBackToMap,
-  onOpenAdmin,
 }) => {
   const [fairStatus, setFairStatus] = useState(calculateFairStatus());
   const currentUser = getStoredUser();
@@ -93,13 +92,6 @@ export const RankingView: React.FC<RankingViewProps> = ({
               className="px-5 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
             >
               Voltar ao Mapa Interativo
-            </button>
-            <button
-              onClick={onOpenAdmin}
-              className="px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 hover:bg-amber-100 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
-            >
-              <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
-              <span>Painel de Testes (Simulador de Horário)</span>
             </button>
           </div>
         </div>
@@ -222,12 +214,6 @@ export const RankingView: React.FC<RankingViewProps> = ({
             <ArrowLeft className="w-4 h-4" />
             <span>Voltar ao Mapa</span>
           </button>
-          <button
-            onClick={onOpenAdmin}
-            className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 font-semibold text-xs transition-colors cursor-pointer"
-          >
-            Simulador de Horário
-          </button>
         </div>
       </div>
     );
@@ -292,54 +278,63 @@ export const RankingView: React.FC<RankingViewProps> = ({
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {sortedRanking.map((entry, index) => {
-                const isUser = currentUser && entry.name.trim().toLowerCase() === currentUser.trim().toLowerCase();
+              {sortedRanking.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="py-12 px-4 text-center text-slate-400">
+                    <p className="font-semibold text-slate-700 text-sm">Nenhum participante registrado ainda.</p>
+                    <p className="text-xs text-slate-400 mt-1">Seja o primeiro a completar o Quiz e conquistar o topo do ranking!</p>
+                  </td>
+                </tr>
+              ) : (
+                sortedRanking.map((entry, index) => {
+                  const isUser = currentUser && entry.name.trim().toLowerCase() === currentUser.trim().toLowerCase();
 
-                return (
-                  <tr 
-                    key={entry.id} 
-                    className={`transition-colors ${
-                      isUser 
-                        ? 'bg-orange-50/90 font-bold text-orange-950 ring-2 ring-orange-400/50 relative z-10' 
-                        : index < 3
-                        ? 'bg-amber-50/20 font-semibold text-slate-800'
-                        : 'text-slate-700 hover:bg-slate-50/80'
-                    }`}
-                  >
-                    {/* Position */}
-                    <td className="py-3.5 px-4 sm:px-6 font-mono">
-                      {index === 0 ? '🥇 1º' : index === 1 ? '🥈 2º' : index === 2 ? '🥉 3º' : `${index + 1}º`}
-                    </td>
+                  return (
+                    <tr 
+                      key={entry.id} 
+                      className={`transition-colors ${
+                        isUser 
+                          ? 'bg-orange-50/90 font-bold text-orange-950 ring-2 ring-orange-400/50 relative z-10' 
+                          : index < 3
+                          ? 'bg-amber-50/20 font-semibold text-slate-800'
+                          : 'text-slate-700 hover:bg-slate-50/80'
+                      }`}
+                    >
+                      {/* Position */}
+                      <td className="py-3.5 px-4 sm:px-6 font-mono">
+                        {index === 0 ? '🥇 1º' : index === 1 ? '🥈 2º' : index === 2 ? '🥉 3º' : `${index + 1}º`}
+                      </td>
 
-                    {/* Name + Arrow indicator if current user */}
-                    <td className="py-3.5 px-4 sm:px-6">
-                      <div className="flex items-center gap-2">
-                        {isUser && (
-                          <span className="inline-flex items-center gap-1 bg-orange-600 text-white text-[11px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">
-                            <span>👉 Você</span>
+                      {/* Name + Arrow indicator if current user */}
+                      <td className="py-3.5 px-4 sm:px-6">
+                        <div className="flex items-center gap-2">
+                          {isUser && (
+                            <span className="inline-flex items-center gap-1 bg-orange-600 text-white text-[11px] font-extrabold px-2 py-0.5 rounded-full shadow-xs">
+                              <span>👉 Você</span>
+                            </span>
+                          )}
+                          <span className={`text-sm ${isUser ? 'font-black text-orange-900' : 'font-bold text-slate-900'}`}>
+                            {entry.name}
                           </span>
-                        )}
-                        <span className={`text-sm ${isUser ? 'font-black text-orange-900' : 'font-bold text-slate-900'}`}>
-                          {entry.name}
+                        </div>
+                      </td>
+
+                      {/* Score */}
+                      <td className="py-3.5 px-4 sm:px-6 text-center font-bold text-orange-600 font-mono">
+                        {entry.score} / {entry.totalQuestions}
+                      </td>
+
+                      {/* Time */}
+                      <td className="py-3.5 px-4 sm:px-6 text-right text-slate-500 font-mono">
+                        <span className="inline-flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-slate-400" />
+                          {formatTime(entry.timeSeconds)}
                         </span>
-                      </div>
-                    </td>
-
-                    {/* Score */}
-                    <td className="py-3.5 px-4 sm:px-6 text-center font-bold text-orange-600 font-mono">
-                      {entry.score} / {entry.totalQuestions}
-                    </td>
-
-                    {/* Time */}
-                    <td className="py-3.5 px-4 sm:px-6 text-right text-slate-500 font-mono">
-                      <span className="inline-flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-slate-400" />
-                        {formatTime(entry.timeSeconds)}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
@@ -360,12 +355,6 @@ export const RankingView: React.FC<RankingViewProps> = ({
         >
           <span>Ir para o Quiz</span>
           <ArrowRight className="w-4 h-4" />
-        </button>
-        <button
-          onClick={onOpenAdmin}
-          className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-800 text-xs font-medium transition-colors cursor-pointer"
-        >
-          Painel de Testes
         </button>
       </div>
     </div>
