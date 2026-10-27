@@ -197,128 +197,128 @@ export const CLIMATE_CARDS: ClimateCard[] = [
 export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 1,
-    question: '1. O El Niño é caracterizado principalmente por qual processo?',
+    question: 'Qual filme venceu o Oscar de Melhor Filme em 2020, tornando-se o primeiro longa de língua não inglesa a conquistar o prêmio principal?',
     options: [
-      'O resfriamento anormal das águas do Oceano Atlântico, próximo à África.',
-      'O aquecimento anormal e periódico das águas do Pacífico, com acúmulo de água quente próximo à América do Sul.',
-      'O aumento permanente do nível dos oceanos causado pelo derretimento das geleiras.',
-      'O resfriamento das águas do Pacífico próximo à América do Sul, provocado pelo aumento dos ventos alísios.',
-      'A interrupção completa das correntes marítimas em todos os oceanos.'
+      'Roma',
+      'Parasita',
+      'Minari',
+      'Drive My Car',
+      'Tudo em Todo o Lugar ao Mesmo Tempo'
     ],
     correctAnswer: 1, // B
-    explanation: 'O El Niño se define pelo aquecimento anômalo e cíclico da porção equatorial do Oceano Pacífico e pelo represamento de águas quentes junto à costa oeste da América do Sul.',
+    explanation: 'Parasita (Parasite), dirigido por Bong Joon-ho, fez história na 92ª cerimônia do Oscar ao se tornar o primeiro longa de língua não inglesa a vencer a categoria de Melhor Filme.',
     relatedTopicId: 1
   },
   {
     id: 2,
-    question: '2. Qual é o papel do enfraquecimento dos ventos alísios durante o El Niño?',
+    question: 'Qual artista lançou o álbum "Thriller" em 1982, que se tornou o mais vendido da história da música?',
     options: [
-      'Intensificar o transporte de águas frias para a costa oeste da América do Sul.',
-      'Aumentar a ressurgência de águas profundas e ricas em nutrientes.',
-      'Impedir a formação de áreas de baixa pressão no Oceano Pacífico.',
-      'Favorecer o acúmulo de águas quentes próximo à América do Sul e reduzir a ressurgência.',
-      'Deslocar definitivamente as águas quentes do Pacífico para o Oceano Atlântico.'
+      'Prince',
+      'Madonna',
+      'Michael Jackson',
+      'Stevie Wonder',
+      'Whitney Houston'
     ],
-    correctAnswer: 3, // D
-    explanation: 'Ao perderem força, os ventos alísios deixam de empurrar a água aquecida para o extremo oeste, permitindo que a piscina quente se espalhe até a costa sul-americana e bloqueie a subida da água fria de ressurgência.',
+    correctAnswer: 2, // C
+    explanation: 'Michael Jackson lançou "Thriller" em novembro de 1982, consagrando-se como o álbum musical mais vendido de todos os tempos.',
     relatedTopicId: 2
   },
   {
     id: 3,
-    question: '3. A origem do nome El Niño está relacionada:',
+    question: 'Em qual universo ficcional da cultura pop fica localizada a cidade de Gotham City?',
     options: [
-      'À associação feita por pescadores peruanos entre a diminuição de peixes e o período próximo ao Natal, em referência ao Menino Jesus.',
-      'Ao nome de um navegador espanhol que descobriu o fenômeno no século XVI.',
-      'À palavra indígena utilizada para designar os ventos alísios.',
-      'À comemoração do Ano-Novo na Ásia, onde o fenômeno se manifesta inicialmente.',
-      'À crença de que o fenômeno era provocado pelo nascimento de uma criança na costa sul-americana.'
+      'Universo Marvel',
+      'Universo DC',
+      'Universo Star Wars',
+      'Universo Harry Potter',
+      'Universo Senhor dos Anéis'
     ],
-    correctAnswer: 0, // A
-    explanation: 'Pescadores do litoral peruano observavam que a chegada dessas águas quentes e a consequente escassez de cardumes ocorriam habitualmente em dezembro (Natal), nomeando o evento como "El Niño de Navidad" em homenagem ao Menino Jesus.',
+    correctAnswer: 1, // B
+    explanation: 'Gotham City é a famosa metrópole fictícia do Universo DC (DC Comics), conhecida por ser a base do Batman.',
     relatedTopicId: 3
   },
   {
     id: 4,
-    question: '4. Qual alternativa descreve corretamente a La Niña?',
+    question: 'Qual é a série de televisão mais assistida da história da Netflix em suas primeiras semanas de lançamento?',
     options: [
-      'É uma fase em que as águas do Pacífico equatorial se aquecem ainda mais do que durante o El Niño.',
-      'É um fenômeno restrito ao Oceano Atlântico, sem influência sobre o clima mundial.',
-      'É a fase oposta do ENOS, caracterizada pelo fortalecimento dos ventos alísios e pela intensificação da ressurgência de águas frias.',
-      'É uma fase em que os ventos alísios desaparecem completamente, provocando o acúmulo de águas quentes na América do Sul.',
-      'É um fenômeno que ocorre exclusivamente durante o inverno e dura sempre menos de um mês.'
+      'Stranger Things',
+      'Wandinha',
+      'The Crown',
+      'Round 6 (Squid Game)',
+      'Bridgerton'
     ],
-    correctAnswer: 2, // C
-    explanation: 'A La Niña representa a fase fria do ciclo ENOS: os ventos alísios tornam-se excepcionalmente vigorosos, acumulando calor a oeste e promovendo forte ressurgência fria no leste do Pacífico.',
+    correctAnswer: 3, // D
+    explanation: 'A série sul-coreana Round 6 (Squid Game) conquistou números recordes globais, tornando-se a produção mais vista da Netflix em suas primeiras semanas.',
     relatedTopicId: 4
   },
   {
     id: 5,
-    question: '5. Sobre a frequência e a duração do El Niño, assinale a alternativa correta.',
+    question: 'Qual superheroína é conhecida por usar os "Braceletes da Vitória" e o "Laço da Verdade"?',
     options: [
-      'O fenômeno ocorre todos os anos, sempre com a mesma intensidade e duração.',
-      'O El Niño ocorre em intervalos regulares de exatamente cinco anos e dura cerca de três meses.',
-      'O fenômeno ocorre apenas durante o verão e desaparece antes do outono.',
-      'O El Niño acontece uma única vez a cada década e pode durar vários anos consecutivos obrigatoriamente.',
-      'O fenômeno ocorre irregularmente, em intervalos de aproximadamente dois a sete anos, e costuma durar de nove a doze meses.'
+      'Viúva Negra',
+      'Mulher-Maravilha',
+      'Capitã Marvel',
+      'Feiticeira Escarlate',
+      'Tempestade'
     ],
-    correctAnswer: 4, // E
-    explanation: 'O ciclo do El Niño não possui regularidade fixa: repete-se de forma quase-periódica a cada 2 a 7 anos, com ciclo típico de vida entre 9 e 12 meses.',
+    correctAnswer: 1, // B
+    explanation: 'A Mulher-Maravilha (Diana Prince), guerreira amazona da DC Comics, possui como armas icônicas os Braceletes da Vitória e o Laço da Verdade.',
     relatedTopicId: 5
   },
   {
     id: 6,
-    question: '6. Como o El Niño pode afetar a agricultura brasileira?',
+    question: 'Qual banda britânica lançou o famoso álbum "Abbey Road" em 1969?',
     options: [
-      'Provoca secas uniformes em todas as regiões do Brasil, eliminando a possibilidade de perdas por excesso de chuva.',
-      'Pode causar secas no Norte e Nordeste e chuvas excessivas no Sul, prejudicando plantações de maneiras diferentes.',
-      'Aumenta a produtividade agrícola de todas as regiões brasileiras, independentemente da cultura.',
-      'Afeta exclusivamente a criação de gado, sem consequências para a produção vegetal.',
-      'Elimina os períodos de estiagem e garante chuvas regulares durante todo o ano.'
+      'Queen',
+      'The Rolling Stones',
+      'Pink Floyd',
+      'Led Zeppelin',
+      'The Beatles'
     ],
-    correctAnswer: 1, // B
-    explanation: 'No Brasil, o El Niño gera um contraste acentuado: reduz precipitações no Norte e no Semiárido nordestino (prejudicando milho/feijão) e concentra tempestades severas no Sul (alagando lavouras de arroz e soja).',
+    correctAnswer: 4, // E
+    explanation: 'The Beatles lançaram "Abbey Road" em 1969, imortalizando a fotografia clássica dos quatro integrantes na faixa de pedestres.',
     relatedTopicId: 6
   },
   {
     id: 7,
-    question: '7. Por que o El Niño pode aumentar os custos da produção industrial brasileira?',
+    question: 'Na franquia de jogos e filmes Pokémon, qual é o número de registro do Pokémon Pikachu na Pokédex nacional?',
     options: [
-      'Porque provoca o fechamento de todas as usinas hidrelétricas do país.',
-      'Porque reduz a necessidade de eletricidade nas indústrias e aumenta o preço dos alimentos.',
-      'Porque impede a importação de combustíveis utilizados na produção industrial.',
-      'Porque a redução das chuvas pode diminuir os níveis dos reservatórios hidrelétricos, exigindo maior uso de termelétricas, geralmente mais caras.',
-      'Porque aumenta a produção hidrelétrica na Amazônia, tornando a distribuição de energia inviável.'
+      '#001',
+      '#007',
+      '#025',
+      '#150',
+      '#151'
     ],
-    correctAnswer: 3, // D
-    explanation: 'Com a seca nos reservatórios das bacias do Norte e Centro-Oeste, o Operador Nacional do Sistema precisa acionar usinas termelétricas a combustível fóssil, encarecendo a tarifa de energia (bandeira tarifária) para o setor produtivo.',
+    correctAnswer: 2, // C
+    explanation: 'Pikachu, o Pokémon elétrico e símbolo da franquia, ocupa a posição #025 na Pokédex Nacional.',
     relatedTopicId: 7
   },
   {
     id: 8,
-    question: '8. Qual é a possível relação entre o aquecimento global e a intensidade dos eventos associados ao El Niño?',
+    question: 'Quem escreveu a série literária de fantasia "As Crônicas de Gelo e Fogo", que inspirou a série Game of Thrones?',
     options: [
-      'O aquecimento global pode elevar a temperatura dos oceanos, acrescentando calor ao sistema climático e potencialmente agravando determinados eventos extremos.',
-      'O aquecimento global elimina as diferenças de temperatura entre os oceanos e impede a ocorrência do El Niño.',
-      'O aumento da temperatura global garante que todos os eventos de El Niño sejam mais fracos que os anteriores.',
-      'O aquecimento global afeta apenas os continentes, sem influência sobre os oceanos ou a circulação atmosférica.',
-      'O aquecimento global transforma automaticamente todo episódio de La Niña em El Niño.'
+      'J.K. Rowling',
+      'J.R.R. Tolkien',
+      'George R.R. Martin',
+      'Rick Riordan',
+      'C.S. Lewis'
     ],
-    correctAnswer: 0, // A
-    explanation: 'O excesso de energia térmica retido na atmosfera e nos oceanos pelo efeito estufa potencializa a evaporação e a instabilidade, fazendo com que os eventos de El Niño gerem secas e precipitações mais extremas.',
+    correctAnswer: 2, // C
+    explanation: 'George R.R. Martin é o renomado escritor da série literária "As Crônicas de Gelo e Fogo" (A Song of Ice and Fire).',
     relatedTopicId: 8
   },
   {
     id: 9,
-    question: '9. Por que a redução da ressurgência durante o El Niño pode prejudicar a cadeia alimentar marinha?',
+    question: 'Qual é o nome do ator que interpreta o personagem Homem de Ferro (Tony Stark) no Universo Cinematográfico Marvel?',
     options: [
-      'Porque o aumento de nutrientes na superfície impede a reprodução dos peixes.',
-      'Porque a água quente transforma os plânctons em organismos incapazes de servir de alimento a outros animais.',
-      'Porque a menor chegada de águas frias e ricas em nutrientes pode reduzir o plâncton, afetando os organismos que dependem dele direta ou indireamente.',
-      'Porque a ressurgência transporta água doce dos rios para o oceano, e sua ausência aumenta a salinidade a níveis letais.',
-      'Porque o enfraquecimento dos ventos alísios elimina permanentemente todas as espécies marinhas do Pacífico.'
+      'Chris Evans',
+      'Robert Downey Jr.',
+      'Chris Hemsworth',
+      'Mark Ruffalo',
+      'Tom Holland'
     ],
-    correctAnswer: 2, // C
-    explanation: 'A camada de água quente superficial impede a subida de nutrientes do fundo. Sem nitratos e fosfatos, o fitoplâncton entra em declínio rápido, colapsando a base da pirâmide alimentar marinha da costa do Pacífico.',
+    correctAnswer: 1, // B
+    explanation: 'Robert Downey Jr. deu vida com enorme aclamação a Tony Stark / Homem de Ferro no Universo Cinematográfico Marvel (MCU).',
     relatedTopicId: 9
   }
 ];
