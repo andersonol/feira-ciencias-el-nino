@@ -28,7 +28,7 @@ export const InteractiveVideoMap: React.FC<InteractiveVideoMapProps> = ({
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [activePointId, setActivePointId] = useState<number | null>(1); // Point 1 ("O fenômeno — ENOS") open initially!
+  const [activePointId, setActivePointId] = useState<number | null>(null); // Only opens when user clicks a hotspot point
   const [showLegend, setShowLegend] = useState<boolean>(false);
   const [showHotspots, setShowHotspots] = useState<boolean>(true);
   const [hoveredPointId, setHoveredPointId] = useState<number | null>(null);
@@ -80,19 +80,8 @@ export const InteractiveVideoMap: React.FC<InteractiveVideoMapProps> = ({
     handleSelectPoint(HOTSPOT_POINTS[nextIndex].id);
   };
 
-  // Calculate card position relative to video container
+  // Calculate card position relative to video container on desktop
   const getCardPositionStyle = (pt: HotspotPoint): React.CSSProperties => {
-    // If screen is narrow (mobile), center it
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      return {
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        position: 'absolute',
-        zIndex: 35,
-      };
-    }
-
     // On desktop, position near point with bounds checking
     const isRightSide = pt.x > 50;
     const isBottomSide = pt.y > 60;
@@ -268,11 +257,11 @@ export const InteractiveVideoMap: React.FC<InteractiveVideoMapProps> = ({
           </div>
         )}
 
-        {/* Active Hotspot Card Floating in position matching mockup */}
+        {/* Desktop: Active Hotspot Card Floating in position matching mockup */}
         {activeHotspot && (
           <div 
             style={getCardPositionStyle(activeHotspot)}
-            className="p-2 select-none"
+            className="hidden md:block p-2 select-none"
           >
             <HotspotCard
               hotspot={activeHotspot}
@@ -284,10 +273,10 @@ export const InteractiveVideoMap: React.FC<InteractiveVideoMapProps> = ({
           </div>
         )}
 
-        {/* Mobile backdrop when card is open to avoid clipping */}
+        {/* Mobile: Single centered modal card with backdrop to avoid clipping & duplication */}
         {activeHotspot && (
           <div 
-            className="md:hidden fixed inset-0 bg-black/50 z-30 flex items-center justify-center p-4 backdrop-blur-xs"
+            className="md:hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs"
             onClick={() => setActivePointId(null)}
           >
             <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm">

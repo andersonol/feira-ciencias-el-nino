@@ -11,6 +11,7 @@ import { Footer } from './components/Footer';
 import { QuizView } from './components/QuizView';
 import { RankingView } from './components/RankingView';
 import { AboutView } from './components/AboutView';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { SecretAdminModal } from './components/SecretAdminModal';
 import { soundService } from './utils/sound';
 import { INITIAL_RANKING } from './data/elninoData';
@@ -25,7 +26,7 @@ import {
 export default function App() {
   const [currentTab, setCurrentTab] = useState<NavTab>('efeito');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
-  const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set([1])); // Point 1 marked as visited by default
+  const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set());
   const [showAdminModal, setShowAdminModal] = useState<boolean>(false);
   const [refreshKey, setRefreshKey] = useState<number>(0);
 
@@ -147,8 +148,8 @@ export default function App() {
         onToggleSound={handleToggleSound}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10">
+      {/* Main Content Area with bottom clearance on mobile for the fixed footer navbar */}
+      <main className="flex-grow max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10 pb-24 md:pb-10">
         {currentTab === 'efeito' && (
           <div className="space-y-8 sm:space-y-12">
             {/* Hero Section matching mockup typography and colors */}
@@ -222,6 +223,12 @@ export default function App() {
 
       {/* Footer with admin access */}
       <Footer onOpenAdmin={() => setShowAdminModal(true)} />
+
+      {/* Mobile Fixed Bottom Navigation Bar ("Início", "Quiz", "Ranking", "Sobre nós") */}
+      <MobileBottomNav
+        currentTab={currentTab}
+        onSelectTab={handleSelectTab}
+      />
 
       {/* Secret Admin Modal for Science Fair schedule & testing */}
       <SecretAdminModal

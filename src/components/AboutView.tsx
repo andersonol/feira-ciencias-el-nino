@@ -63,7 +63,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onBackToMap }) => {
           </p>
 
           <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/90 text-slate-900 font-bold leading-relaxed">
-            Grupo composto por: Ísis Ribeiro, Renan Santos, Ícaro Brasil, Renata Ornellas, João Miguel, Rafael Eccard, Guilherme Malaquias e Heitor Rohen.
+            Grupo composto por: Guilherme Malaquias, Heitor Rohen, Ícaro Brasil, Ísis Ribeiro, João Miguel, Rafael Eccard, Renan Santos e Renata Ornellas.
           </div>
         </div>
 

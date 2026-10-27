@@ -6,7 +6,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onOpenAdmin }) => {
   return (
-    <footer className="w-full mt-16 sm:mt-24 border-t border-slate-200/80 bg-white/60 py-8 px-4 sm:px-6">
+    <footer className="w-full mt-16 sm:mt-24 border-t border-slate-200/80 bg-white/60 py-8 px-4 sm:px-6 mb-16 md:mb-0">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-slate-500">
         <div>
           <p className="font-semibold text-slate-700">

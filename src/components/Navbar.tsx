@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Volume2, VolumeX, Menu, X, ChevronRight } from 'lucide-react';
+import React from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 export type NavTab = 'efeito' | 'quiz' | 'ranking' | 'sobre';
 
@@ -16,8 +16,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   soundEnabled,
   onToggleSound,
 }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-
   const tabs: { id: NavTab; label: string }[] = [
     { id: 'efeito', label: 'O Efeito El Niño' },
     { id: 'quiz', label: 'Quiz' },
@@ -27,7 +25,6 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleTabClick = (tabId: NavTab) => {
     onSelectTab(tabId);
-    setMobileMenuOpen(false);
   };
 
   return (
@@ -91,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </nav>
 
-        {/* Mobile Right Controls: Sound Toggle & Hamburger Button */}
+        {/* Mobile Right Controls: Sound Toggle */}
         <div className="flex md:hidden items-center gap-2">
           {/* Sound toggle button on mobile */}
           <button
@@ -106,46 +103,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               <VolumeX className="w-4 h-4 text-slate-400" />
             )}
           </button>
-
-          {/* Hamburger Menu Toggle Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
-            className="w-9 h-9 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-700 hover:text-slate-950 hover:bg-slate-50 transition-colors cursor-pointer shadow-xs"
-          >
-            {mobileMenuOpen ? (
-              <X className="w-5 h-5 text-slate-800" />
-            ) : (
-              <Menu className="w-5 h-5 text-slate-800" />
-            )}
-          </button>
         </div>
       </div>
-
-      {/* Mobile Drawer Dropdown Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-100 bg-white/98 backdrop-blur-lg px-4 py-4 shadow-xl animate-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col gap-2">
-            {tabs.map((tab) => {
-              const isActive = currentTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab.id)}
-                  className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-[#f95716] text-white shadow-sm'
-                      : 'bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-slate-100'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  <ChevronRight className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-      )}
     </header>
   );
 };
