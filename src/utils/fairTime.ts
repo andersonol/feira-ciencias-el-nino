@@ -47,19 +47,50 @@ export function setStoredUser(name: string): void {
   localStorage.setItem('current_quiz_user', name);
 }
 
+let currentOverrideCache: FairOverride = 'bypass';
+
+if (typeof window !== 'undefined') {
+  try {
+    const val = localStorage.getItem('elnino_fair_override') as FairOverride | null;
+    if (val) {
+      currentOverrideCache = val;
+    }
+  } catch {}
+}
+
 export function getFairOverride(): FairOverride {
-  if (typeof window === 'undefined') return 'real';
-  const val = localStorage.getItem('elnino_fair_override') as FairOverride | null;
-  // If not set, default to 'bypass' in development/testing mode so user can test right away if they haven't explicitly set it, OR default to 'bypass' with an easy switcher.
-  // Wait, the prompt says:
-  // "O quiz só deve estar disponível no dia 30/10/2026 entre 08:00 e 10:00h da manhã (preciso de uma página secreta para ativar ou desativar essa regra para poder testar antes desse prazo)"
-  // So 'real' evaluates the real date rule, but default can be 'real' or stored value!
-  return val || 'real';
+  if (typeof window === 'undefined') return currentOverrideCache;
+  try {
+    const val = localStorage.getItem('elnino_fair_override') as FairOverride | null;
+    return val || currentOverrideCache;
+  } catch {
+    return currentOverrideCache;
+  }
 }
 
 export function setFairOverride(override: FairOverride): void {
+  currentOverrideCache = override;
   if (typeof window === 'undefined') return;
-  localStorage.setItem('elnino_fair_override', override);
+  try {
+    localStorage.setItem('elnino_fair_override', override);
+  } catch {}
+}
+
+export async function syncFairOverrideFromServer(): Promise<FairOverride> {
+  try {
+    const res = await fetch('/api/fair-override');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.override) {
+        const serverOverride = data.override as FairOverride;
+        setFairOverride(serverOverride);
+        return serverOverride;
+      }
+    }
+  } catch {
+    // network fallback
+  }
+  return getFairOverride();
 }
 
 export function calculateFairStatus(now: Date = new Date()): FairStatus {

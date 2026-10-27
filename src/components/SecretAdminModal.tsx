@@ -19,6 +19,10 @@ import {
   getDeviceFingerprint,
   getStoredUser
 } from '../utils/fairTime';
+import { 
+  getFairOverrideFromServer, 
+  updateFairOverrideOnServer 
+} from '../services/rankingService';
 
 interface SecretAdminModalProps {
   isOpen: boolean;
@@ -37,18 +41,32 @@ export const SecretAdminModal: React.FC<SecretAdminModalProps> = ({
   const [currentFp, setCurrentFp] = useState<string>(getDeviceFingerprint());
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (isOpen) {
+      getFairOverrideFromServer().then((ov) => {
+        setCurrentOverride(ov);
+      });
+      setCurrentFp(getDeviceFingerprint());
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const handleSelectMode = (mode: FairOverride) => {
-    setFairOverride(mode);
+  const handleSelectMode = async (mode: FairOverride) => {
     setCurrentOverride(mode);
+    setFairOverride(mode);
+    const success = await updateFairOverrideOnServer(mode);
     onStateChanged();
-    showMessage(`Regra alterada para: ${getModeName(mode)}`);
+    if (success) {
+      showMessage(`Regra salva no servidor SQLite para TODOS os aparelhos: ${getModeName(mode)}`);
+    } else {
+      showMessage(`Regra aplicada: ${getModeName(mode)}`);
+    }
   };
 
   const showMessage = (msg: string) => {
     setStatusMessage(msg);
-    setTimeout(() => setStatusMessage(null), 3000);
+    setTimeout(() => setStatusMessage(null), 3500);
   };
 
   const handleResetDevice = () => {

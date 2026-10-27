@@ -1,5 +1,6 @@
 import { RankingEntry } from '../types/elnino';
 import { INITIAL_RANKING } from '../data/elninoData';
+import { FairOverride, setFairOverride } from '../utils/fairTime';
 
 const LOCAL_STORAGE_KEY = 'elnino_ranking';
 
@@ -10,6 +11,9 @@ export async function fetchRankingFromDatabase(): Promise<RankingEntry[]> {
       throw new Error(`HTTP ${res.status}`);
     }
     const data = await res.json();
+    if (data.override) {
+      setFairOverride(data.override as FairOverride);
+    }
     if (data.success && Array.isArray(data.ranking)) {
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data.ranking));
@@ -125,4 +129,36 @@ export async function getDatabaseStats() {
     // ignore
   }
   return null;
+}
+
+export async function getFairOverrideFromServer(): Promise<FairOverride> {
+  try {
+    const res = await fetch('/api/fair-override');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.override) {
+        setFairOverride(data.override as FairOverride);
+        return data.override as FairOverride;
+      }
+    }
+  } catch (err) {
+    console.warn('[RankingService] Falha ao obter override:', err);
+  }
+  return 'bypass';
+}
+
+export async function updateFairOverrideOnServer(override: FairOverride): Promise<boolean> {
+  try {
+    setFairOverride(override);
+    const res = await fetch('/api/admin/fair-override', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ override }),
+    });
+    const data = await res.json();
+    return !!data.success;
+  } catch (err) {
+    console.error('[RankingService] Falha ao enviar override:', err);
+    return false;
+  }
 }

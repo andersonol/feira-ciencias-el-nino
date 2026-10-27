@@ -14,7 +14,8 @@ import {
 import { RankingEntry } from '../types/elnino';
 import { 
   calculateFairStatus, 
-  getStoredUser 
+  getStoredUser,
+  syncFairOverrideFromServer
 } from '../utils/fairTime';
 
 interface RankingViewProps {
@@ -33,6 +34,9 @@ export const RankingView: React.FC<RankingViewProps> = ({
   const currentUser = getStoredUser();
 
   useEffect(() => {
+    syncFairOverrideFromServer().then(() => {
+      setFairStatus(calculateFairStatus());
+    });
     const timer = setInterval(() => {
       setFairStatus(calculateFairStatus());
     }, 1000);

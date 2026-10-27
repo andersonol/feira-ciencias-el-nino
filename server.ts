@@ -8,7 +8,9 @@ import {
   checkUserExists,
   resetRankingTable,
   clearRankingTable,
-  getDatabaseStats
+  getDatabaseStats,
+  getFairOverrideSetting,
+  setFairOverrideSetting
 } from './src/server/db.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,7 +32,8 @@ async function startServer() {
   app.get('/api/ranking', (req, res) => {
     try {
       const ranking = getAllRanking();
-      res.json({ success: true, ranking });
+      const currentOverride = getFairOverrideSetting();
+      res.json({ success: true, ranking, override: currentOverride });
     } catch (err: any) {
       console.error('[SQLite] Erro ao buscar ranking:', err);
       res.status(500).json({ error: 'Erro ao carregar classificação do banco SQLite.' });
@@ -109,6 +112,33 @@ async function startServer() {
       res.json({ success: true, stats });
     } catch (err: any) {
       res.status(500).json({ error: 'Erro ao obter estatísticas do banco SQLite.' });
+    }
+  });
+
+  // 7. GET /api/fair-override - Get global science fair schedule override setting
+  app.get('/api/fair-override', (req, res) => {
+    try {
+      const override = getFairOverrideSetting();
+      res.json({ success: true, override });
+    } catch (err: any) {
+      console.error('[SQLite] Erro ao obter override:', err);
+      res.status(500).json({ error: 'Erro ao obter status da feira.' });
+    }
+  });
+
+  // 8. POST /api/admin/fair-override - Set global science fair schedule override setting (applied to all devices)
+  app.post('/api/admin/fair-override', (req, res) => {
+    try {
+      const { override } = req.body;
+      if (!override || typeof override !== 'string') {
+        return res.status(400).json({ error: 'Parâmetro override inválido.' });
+      }
+      const updated = setFairOverrideSetting(override);
+      console.log(`[SQLite] Override da Feira alterado globalmente para: "${updated}"`);
+      res.json({ success: true, override: updated });
+    } catch (err: any) {
+      console.error('[SQLite] Erro ao salvar override:', err);
+      res.status(500).json({ error: 'Erro ao atualizar configuração no banco SQLite.' });
     }
   });
 

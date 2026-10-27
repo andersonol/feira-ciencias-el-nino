@@ -17,7 +17,8 @@ import {
   calculateFairStatus, 
   getDeviceFingerprint, 
   setStoredUser,
-  getStoredUser
+  getStoredUser,
+  syncFairOverrideFromServer
 } from '../utils/fairTime';
 import { RankingEntry } from '../types/elnino';
 import { checkUserAvailability } from '../services/rankingService';
@@ -47,6 +48,9 @@ export const QuizView: React.FC<QuizViewProps> = ({
   const [fairStatus, setFairStatus] = useState(calculateFairStatus());
 
   useEffect(() => {
+    syncFairOverrideFromServer().then(() => {
+      setFairStatus(calculateFairStatus());
+    });
     const timer = setInterval(() => {
       setFairStatus(calculateFairStatus());
     }, 1000);
@@ -117,8 +121,8 @@ export const QuizView: React.FC<QuizViewProps> = ({
       return;
     }
 
-    // Check device fingerprint locally
-    if (deviceAlreadyParticipated) {
+    // Check device fingerprint locally (bypass if in test mode)
+    if (deviceAlreadyParticipated && fairStatus.override !== 'bypass') {
       setNameError('Este dispositivo já participou do quiz anteriormente.');
       return;
     }
@@ -131,7 +135,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
         soundService.playPop();
         return;
       }
-      if (serverCheck.deviceParticipated) {
+      if (serverCheck.deviceParticipated && fairStatus.override !== 'bypass') {
         setNameError(`Este dispositivo já realizou o quiz no banco de dados (${serverCheck.existingUserName || 'participante registrado'}).`);
         soundService.playPop();
         return;
@@ -257,8 +261,8 @@ export const QuizView: React.FC<QuizViewProps> = ({
     );
   }
 
-  // CASE 2: Device already completed the quiz
-  if (deviceAlreadyParticipated && !hasStarted && !isComplete) {
+  // CASE 2: Device already completed the quiz (bypassed in test mode)
+  if (deviceAlreadyParticipated && !hasStarted && !isComplete && fairStatus.override !== 'bypass') {
     const existingName = getStoredUser();
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center animate-in fade-in">

@@ -38,7 +38,23 @@ export function initDatabase() {
 
     CREATE UNIQUE INDEX IF NOT EXISTS idx_ranking_name ON ranking(LOWER(TRIM(name)));
     CREATE INDEX IF NOT EXISTS idx_ranking_device ON ranking(device_fingerprint);
+
+    CREATE TABLE IF NOT EXISTS system_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
+
+  // Default global fair_override to 'bypass' (Liberado para Testes) so it is accessible to all devices
+  try {
+    db.prepare(`
+      INSERT OR IGNORE INTO system_settings (key, value)
+      VALUES ('fair_override', 'bypass')
+    `).run();
+  } catch (err) {
+    console.warn('[SQLite] Erro ao inicializar fair_override default:', err);
+  }
 
   // Remove any previously seeded default names to guarantee clean start
   try {
@@ -96,10 +112,45 @@ export function getAllRanking() {
   }));
 }
 
+export function getSetting(key: string, defaultValue = ''): string {
+  try {
+    const row = db.prepare('SELECT value FROM system_settings WHERE key = ?').get(key) as { value: string } | undefined;
+    return row ? row.value : defaultValue;
+  } catch (err) {
+    console.error(`[SQLite] Erro ao obter setting "${key}":`, err);
+    return defaultValue;
+  }
+}
+
+export function setSetting(key: string, value: string): void {
+  try {
+    db.prepare(`
+      INSERT INTO system_settings (key, value, updated_at)
+      VALUES (?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP
+    `).run(key, value);
+  } catch (err) {
+    console.error(`[SQLite] Erro ao salvar setting "${key}":`, err);
+    throw err;
+  }
+}
+
+export function getFairOverrideSetting(): string {
+  return getSetting('fair_override', 'bypass');
+}
+
+export function setFairOverrideSetting(override: string): string {
+  const validModes = ['bypass', 'before', 'during', 'after', 'real'];
+  const safeOverride = validModes.includes(override) ? override : 'bypass';
+  setSetting('fair_override', safeOverride);
+  return safeOverride;
+}
+
 export function checkUserExists(name?: string, deviceFp?: string) {
   let nameTaken = false;
   let deviceParticipated = false;
   let existingUserName: string | null = null;
+  const currentOverride = getFairOverrideSetting();
 
   if (name && typeof name === 'string' && name.trim()) {
     const found = db.prepare('SELECT name FROM ranking WHERE LOWER(TRIM(name)) = LOWER(TRIM(?))').get(name.trim()) as { name: string } | undefined;
@@ -108,7 +159,8 @@ export function checkUserExists(name?: string, deviceFp?: string) {
     }
   }
 
-  if (deviceFp && typeof deviceFp === 'string' && deviceFp.trim() && !deviceFp.startsWith('seed_')) {
+  // Only enforce device uniqueness if NOT in bypass mode
+  if (currentOverride !== 'bypass' && deviceFp && typeof deviceFp === 'string' && deviceFp.trim() && !deviceFp.startsWith('seed_')) {
     const foundDev = db.prepare('SELECT name FROM ranking WHERE device_fingerprint = ?').get(deviceFp.trim()) as { name: string } | undefined;
     if (foundDev) {
       deviceParticipated = true;
@@ -116,7 +168,7 @@ export function checkUserExists(name?: string, deviceFp?: string) {
     }
   }
 
-  return { nameTaken, deviceParticipated, existingUserName };
+  return { nameTaken, deviceParticipated, existingUserName, currentOverride };
 }
 
 export function insertRankingEntry(data: {
@@ -127,6 +179,7 @@ export function insertRankingEntry(data: {
   schoolGrade?: string;
 }) {
   const trimmedName = data.name.trim();
+  const currentOverride = getFairOverrideSetting();
 
   // Check unique username
   const existingName = db.prepare('SELECT id, name FROM ranking WHERE LOWER(TRIM(name)) = LOWER(TRIM(?))').get(trimmedName) as { id: number; name: string } | undefined;
@@ -134,8 +187,8 @@ export function insertRankingEntry(data: {
     throw new Error(`O nome "${trimmedName}" já foi cadastrado no ranking. Por favor, adicione seu sobrenome.`);
   }
 
-  // Check device anti-duplicity
-  if (data.deviceFingerprint && !data.deviceFingerprint.startsWith('seed_')) {
+  // Check device anti-duplicity (only when not in bypass mode to allow repeated testing on mobile/desktop)
+  if (currentOverride !== 'bypass' && data.deviceFingerprint && !data.deviceFingerprint.startsWith('seed_')) {
     const existingDevice = db.prepare('SELECT id, name FROM ranking WHERE device_fingerprint = ?').get(data.deviceFingerprint) as { id: number; name: string } | undefined;
     if (existingDevice) {
       throw new Error(`Este dispositivo já registrou uma participação no quiz com o nome "${existingDevice.name}".`);

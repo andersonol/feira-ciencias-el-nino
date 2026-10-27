@@ -16,7 +16,7 @@ import { SecretAdminModal } from './components/SecretAdminModal';
 import { soundService } from './utils/sound';
 import { INITIAL_RANKING } from './data/elninoData';
 import { RankingEntry } from './types/elnino';
-import { calculateFairStatus } from './utils/fairTime';
+import { calculateFairStatus, syncFairOverrideFromServer, getFairOverride } from './utils/fairTime';
 import {
   fetchRankingFromDatabase,
   submitQuizToDatabase,
@@ -46,16 +46,24 @@ export default function App() {
     return INITIAL_RANKING;
   });
 
-  // Sync with SQLite database on mount and periodically keep devices updated
+  // Sync fairOverride and ranking with SQLite database on mount and periodically keep all devices updated
   useEffect(() => {
     let isMounted = true;
-    const loadRanking = async () => {
+    let lastOverride = getFairOverride();
+
+    const syncGlobalState = async () => {
+      const serverOverride = await syncFairOverrideFromServer();
+      if (isMounted && serverOverride !== lastOverride) {
+        lastOverride = serverOverride;
+        setRefreshKey((k) => k + 1);
+      }
       const data = await fetchRankingFromDatabase();
       if (isMounted) setRanking(data);
     };
-    loadRanking();
 
-    const interval = setInterval(loadRanking, 8000);
+    syncGlobalState();
+
+    const interval = setInterval(syncGlobalState, 3000);
     return () => {
       isMounted = false;
       clearInterval(interval);
@@ -87,13 +95,14 @@ export default function App() {
   const handleSelectTab = (tab: NavTab) => {
     // If user clicks on quiz after the fair is finished, route directly to ranking
     if (tab === 'quiz') {
-      const fairStatus = calculateFairStatus();
-      if (fairStatus.status === 'after') {
-        setCurrentTab('ranking');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        fetchRankingFromDatabase().then((data) => setRanking(data));
-        return;
-      }
+      syncFairOverrideFromServer().then((ov) => {
+        const fairStatus = calculateFairStatus();
+        if (fairStatus.status === 'after') {
+          setCurrentTab('ranking');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          fetchRankingFromDatabase().then((data) => setRanking(data));
+        }
+      });
     }
 
     if (tab === 'ranking') {
