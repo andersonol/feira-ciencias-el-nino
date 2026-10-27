@@ -1,0 +1,6 @@
+{
+  "name": "El Niño - Observatório Climático | Feira de Ciências",
+  "description": "Plataforma interativa para feira de ciências sobre o fenômeno climático El Niño, com mapa interativo em vídeo, dados científicos e impactos climáticos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

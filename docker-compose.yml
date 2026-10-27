@@ -1,0 +1,17 @@
+services:
+  elnino-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: elnino-feira-ciencias
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_PATH=/app/data/elnino.sqlite
+    volumes:
+      # O volume abaixo salva o banco de dados SQLite na pasta ./data do seu computador.
+      # Assim, os rankings e participantes permanecem salvos mesmo se o container for reiniciado ou recriado.
+      - ./data:/app/data
