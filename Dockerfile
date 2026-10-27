@@ -1,51 +1,28 @@
-# ==========================================
-# Estágio 1: Build do Frontend (React)
-# ==========================================
-FROM node:20-alpine AS frontend-builder
-WORKDIR /app/client
-COPY client/package*.json ./
-RUN npm ci
-COPY client/ ./
-RUN npm run build
-
-# ==========================================
-# Estágio 2: Instalação do Backend (Node.js)
-# ==========================================
-FROM node:20-alpine AS backend-builder
-WORKDIR /app/server
-COPY server/package*.json ./
-RUN npm ci --only=production
-
-# ==========================================
-# Estágio 3: Runtime de Produção (Debian Slim)
-# ==========================================
-FROM node:20-slim AS runner
+FROM oven/bun:1 AS builder
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    sqlite3 \
-    && rm -rf /var/lib/apt/lists/*
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
-RUN groupadd -g 10001 appgroup && \
-    useradd -u 10001 -g appgroup -m -s /bin/bash appuser
+COPY . .
+RUN bun run build
+RUN bun install --production --frozen-lockfile
 
-COPY --chown=appuser:appgroup server/package*.json ./
-COPY --chown=appuser:appgroup --from=backend-builder /app/server/node_modules ./node_modules
-COPY --chown=appuser:appgroup server/ ./server/
-COPY --chown=appuser:appgroup --from=frontend-builder /app/client/dist ./client/dist
+FROM oven/bun:1 AS runner
+WORKDIR /app
 
-RUN mkdir -p /app/data && chown -R appuser:appgroup /app/data
+ENV NODE_ENV=production \
+    PORT=3000 \
+    DATABASE_PATH=/app/data/elnino.sqlite
 
-USER appuser
+COPY --from=builder --chown=bun:bun /app/package.json ./package.json
+COPY --from=builder --chown=bun:bun /app/node_modules ./node_modules
+COPY --from=builder --chown=bun:bun /app/server.ts ./server.ts
+COPY --from=builder --chown=bun:bun /app/src ./src
+COPY --from=builder --chown=bun:bun /app/dist ./dist
 
+RUN mkdir -p /app/data && chown bun:bun /app/data
+
+USER bun
 EXPOSE 3000
-
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV DB_PATH=/app/data/database.sqlite
-
-#HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-#  CMD curl -f http://localhost:3000/health || exit 1
-
-CMD ["node", "server/index.js"]
+CMD ["bun", "server.ts"]

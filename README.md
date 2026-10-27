@@ -1,20 +1,29 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Feira de Ciências: El Niño
 
-# Run and deploy your AI Studio app
+Aplicação interativa sobre o fenômeno El Niño, com quiz e ranking persistido em SQLite.
 
-This contains everything you need to run your app locally.
+## Desenvolvimento local
 
-View your app in AI Studio: https://ai.studio/apps/4bbf8080-8475-4079-b0b1-a61bd8786e22
+Requisitos: Bun e uma chave da API Gemini.
 
-## Run Locally
+1. Instale as dependências com `bun install --frozen-lockfile`.
+2. Configure `GEMINI_API_KEY` no arquivo `.env.local`.
+3. Inicie o servidor com `bun run dev`.
 
-**Prerequisites:**  Node.js
+## Docker
 
+Crie e inicie a aplicação com `docker compose up --build -d`. A aplicação fica disponível em `http://localhost:3000`, e os dados SQLite são persistidos em `./data`.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Publicar no GitHub Container Registry
+
+O workflow em `.github/workflows/ci-cd.yml` testa e publica automaticamente no GHCR quando há push para `main`. Ele gera as tags `latest` e o SHA curto do commit. O workflow usa `GITHUB_TOKEN`; confirme que a configuração de Actions do repositório permite escrita de pacotes.
+
+Para publicar manualmente, use um token do GitHub com permissão `write:packages`:
+
+```sh
+docker build -t ghcr.io/OWNER/REPOSITORY:latest .
+echo "$GH_TOKEN" | docker login ghcr.io -u USERNAME --password-stdin
+docker push ghcr.io/OWNER/REPOSITORY:latest
+```
+
+Substitua `OWNER` e `REPOSITORY` pelo proprietário e nome do repositório. Para iniciar a imagem publicada, configure `image: ghcr.io/OWNER/REPOSITORY:latest` no Compose, mantendo a porta `3000` e o volume `/app/data`.
