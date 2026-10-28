@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { Clock } from 'lucide-react';
 import { Navbar, NavTab } from './components/Navbar';
 import { InteractiveVideoMap } from './components/InteractiveVideoMap';
 import { ClimateCardsGrid } from './components/ClimateCardsGrid';
@@ -29,6 +30,20 @@ export default function App() {
   const [visitedPoints, setVisitedPoints] = useState<Set<number>>(new Set());
   const [showAdminModal, setShowAdminModal] = useState<boolean>(false);
   const [refreshKey, setRefreshKey] = useState<number>(0);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Auto-dismiss toast after 2 seconds (2000ms)
+  useEffect(() => {
+    if (!toastMessage) return;
+    const timer = setTimeout(() => {
+      setToastMessage(null);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [toastMessage]);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+  };
 
   const [ranking, setRanking] = useState<RankingEntry[]>(() => {
     if (typeof window !== 'undefined') {
@@ -92,17 +107,26 @@ export default function App() {
     setVisitedPoints((prev) => new Set([...prev, id]));
   };
 
+  const handleGoToRanking = (reason?: string) => {
+    if (reason) {
+      showToast(reason);
+    }
+    setCurrentTab('ranking');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    fetchRankingFromDatabase().then((data) => setRanking(data));
+  };
+
   const handleSelectTab = (tab: NavTab) => {
-    // If user clicks on quiz after the fair is finished, route directly to ranking
+    // If user clicks on quiz after the fair is finished, route directly to ranking with toast
     if (tab === 'quiz') {
-      syncFairOverrideFromServer().then((ov) => {
-        const fairStatus = calculateFairStatus();
-        if (fairStatus.status === 'after') {
-          setCurrentTab('ranking');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          fetchRankingFromDatabase().then((data) => setRanking(data));
-        }
-      });
+      const fairStatus = calculateFairStatus();
+      if (fairStatus.status === 'after') {
+        showToast('O quiz foi encerrado! Redirecionando para o ranking com o resultado oficial.');
+        setCurrentTab('ranking');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        fetchRankingFromDatabase().then((data) => setRanking(data));
+        return;
+      }
     }
 
     if (tab === 'ranking') {
@@ -214,7 +238,7 @@ export default function App() {
           <QuizView
             ranking={ranking}
             onFinishQuiz={handleFinishQuiz}
-            onGoToRanking={() => setCurrentTab('ranking')}
+            onGoToRanking={handleGoToRanking}
             onBackToMap={() => setCurrentTab('efeito')}
           />
         )}
@@ -234,6 +258,20 @@ export default function App() {
 
       {/* Footer with info */}
       <Footer />
+
+      {/* Toast Notification (Floating banner with 2 seconds duration) */}
+      {toastMessage && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-50 max-w-md w-[92%] sm:w-auto px-4 py-3 rounded-2xl bg-slate-900/95 text-white shadow-2xl backdrop-blur-md border border-slate-700/60 flex items-center gap-3 text-xs sm:text-sm font-semibold animate-in fade-in slide-in-from-top-3 duration-200 pointer-events-none"
+        >
+          <div className="w-8 h-8 rounded-xl bg-[#f95716]/20 text-[#f95716] flex items-center justify-center shrink-0">
+            <Clock className="w-4 h-4" />
+          </div>
+          <span className="flex-grow pr-1">{toastMessage}</span>
+        </div>
+      )}
 
       {/* Mobile Fixed Bottom Navigation Bar ("Início", "Quiz", "Ranking", "Sobre nós") */}
       <MobileBottomNav

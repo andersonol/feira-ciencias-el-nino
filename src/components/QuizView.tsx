@@ -33,7 +33,7 @@ interface ShuffledQuestion {
 interface QuizViewProps {
   ranking: RankingEntry[];
   onFinishQuiz: (name: string, score: number, timeSeconds: number, deviceFp: string) => void;
-  onGoToRanking: () => void;
+  onGoToRanking: (reason?: string) => void;
   onBackToMap: () => void;
   onOpenAdmin?: () => void;
 }
@@ -57,10 +57,10 @@ export const QuizView: React.FC<QuizViewProps> = ({
     return () => clearInterval(timer);
   }, []);
 
-  // Check if fair has already ended -> redirect to ranking
+  // Check if fair has already ended -> redirect to ranking with reason
   useEffect(() => {
     if (fairStatus.status === 'after') {
-      onGoToRanking();
+      onGoToRanking('O quiz foi encerrado! Redirecionando para o ranking.');
     }
   }, [fairStatus.status, onGoToRanking]);
 
@@ -301,7 +301,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
-              onClick={onGoToRanking}
+              onClick={() => onGoToRanking()}
               className="px-6 py-2.5 rounded-xl bg-[#f95716] hover:bg-[#ea4e0f] text-white text-xs sm:text-sm font-bold shadow-md transition-all cursor-pointer"
             >
               Ver Minha Posição no Ranking
@@ -581,7 +581,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
         {/* Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
           <button
-            onClick={onGoToRanking}
+            onClick={() => onGoToRanking()}
             className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#f95716] hover:bg-[#ea4e0f] text-white font-bold text-sm shadow-md hover:shadow-lg transition-all cursor-pointer"
           >
             <Trophy className="w-4 h-4" />
