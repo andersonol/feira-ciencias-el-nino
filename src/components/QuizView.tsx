@@ -67,7 +67,16 @@ export const QuizView: React.FC<QuizViewProps> = ({
   // Device Fingerprint check
   const currentDeviceFp = useMemo(() => getDeviceFingerprint(), []);
   const deviceAlreadyParticipated = useMemo(() => {
-    return ranking.some((entry) => entry.deviceFingerprint === currentDeviceFp);
+    const inRanking = ranking.some((entry) => entry.deviceFingerprint === currentDeviceFp);
+    if (inRanking) return true;
+    if (typeof window !== 'undefined') {
+      try {
+        if (localStorage.getItem('elnino_quiz_has_completed') === 'true') {
+          return true;
+        }
+      } catch {}
+    }
+    return false;
   }, [ranking, currentDeviceFp]);
 
   // Quiz Setup state
@@ -121,8 +130,8 @@ export const QuizView: React.FC<QuizViewProps> = ({
       return;
     }
 
-    // Check device fingerprint locally (bypass if in test mode)
-    if (deviceAlreadyParticipated && fairStatus.override !== 'bypass') {
+    // Check device fingerprint locally
+    if (deviceAlreadyParticipated) {
       setNameError('Este dispositivo já participou do quiz anteriormente.');
       return;
     }
@@ -135,7 +144,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
         soundService.playPop();
         return;
       }
-      if (serverCheck.deviceParticipated && fairStatus.override !== 'bypass') {
+      if (serverCheck.deviceParticipated) {
         setNameError(`Este dispositivo já realizou o quiz no banco de dados (${serverCheck.existingUserName || 'participante registrado'}).`);
         soundService.playPop();
         return;
@@ -206,6 +215,11 @@ export const QuizView: React.FC<QuizViewProps> = ({
       setIsComplete(true);
       const cleanName = userName.trim();
       setStoredUser(cleanName);
+      if (typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('elnino_quiz_has_completed', 'true');
+        } catch {}
+      }
       onFinishQuiz(cleanName, score, elapsedSeconds, currentDeviceFp);
       soundService.playSuccess();
     }
@@ -261,8 +275,8 @@ export const QuizView: React.FC<QuizViewProps> = ({
     );
   }
 
-  // CASE 2: Device already completed the quiz (bypassed in test mode)
-  if (deviceAlreadyParticipated && !hasStarted && !isComplete && fairStatus.override !== 'bypass') {
+  // CASE 2: Device already completed the quiz
+  if (deviceAlreadyParticipated && !hasStarted && !isComplete) {
     const existingName = getStoredUser();
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center animate-in fade-in">
@@ -404,7 +418,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
           {/* Progress bar */}
           <div className="w-full bg-slate-100 h-2 rounded-full mb-6 overflow-hidden">
             <div 
-              className="bg-sky-500 h-full rounded-full transition-all duration-300"
+              className="bg-[#f95716] h-full rounded-full transition-all duration-300"
               style={{ width: `${((currentIdx + 1) / shuffledQuestions.length) * 100}%` }}
             />
           </div>
@@ -499,7 +513,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                 className={`px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white transition-all cursor-pointer ${
                   selectedOptionIdx === null
                     ? 'bg-slate-300 cursor-not-allowed'
-                    : 'bg-sky-600 hover:bg-sky-700 shadow-md hover:scale-102'
+                    : 'bg-[#f95716] hover:bg-[#ea4e0f] shadow-md hover:scale-102'
                 }`}
               >
                 Confirmar Resposta

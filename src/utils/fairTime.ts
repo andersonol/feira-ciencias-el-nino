@@ -17,11 +17,11 @@ export function getDeviceFingerprint(): string {
   if (typeof window === 'undefined') return 'server-device';
   try {
     let fp = localStorage.getItem('elnino_device_fingerprint');
-    if (!fp) {
-      const screenInfo = `${window.screen.width}x${window.screen.height}x${window.screen.colorDepth}`;
-      const navInfo = `${navigator.userAgent}-${navigator.language}-${navigator.hardwareConcurrency || 4}`;
-      const randomSeed = Math.random().toString(36).substring(2, 10);
-      fp = `device_${btoa(`${screenInfo}_${navInfo}_${randomSeed}`).slice(0, 24)}`;
+    if (!fp || fp === 'fallback-device-id') {
+      const rnd = typeof crypto !== 'undefined' && crypto.randomUUID 
+        ? crypto.randomUUID().replace(/-/g, '') 
+        : `${Math.random().toString(36).substring(2, 12)}_${Date.now()}`;
+      fp = `dev_${rnd}`;
       localStorage.setItem('elnino_device_fingerprint', fp);
     }
     return fp;
@@ -32,8 +32,12 @@ export function getDeviceFingerprint(): string {
 
 export function resetDeviceFingerprint(): string {
   if (typeof window === 'undefined') return '';
-  const newFp = `device_${Math.random().toString(36).substring(2, 12)}_${Date.now()}`;
-  localStorage.setItem('elnino_device_fingerprint', newFp);
+  const newFp = `dev_${Math.random().toString(36).substring(2, 12)}_${Date.now()}`;
+  try {
+    localStorage.setItem('elnino_device_fingerprint', newFp);
+    localStorage.removeItem('current_quiz_user');
+    localStorage.removeItem('elnino_quiz_has_completed');
+  } catch {}
   return newFp;
 }
 
