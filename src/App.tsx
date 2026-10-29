@@ -32,12 +32,12 @@ export default function App() {
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Auto-dismiss toast after 2 seconds (2000ms)
+  // Auto-dismiss toast after 6 seconds (6000ms)
   useEffect(() => {
     if (!toastMessage) return;
     const timer = setTimeout(() => {
       setToastMessage(null);
-    }, 2000);
+    }, 6000);
     return () => clearTimeout(timer);
   }, [toastMessage]);
 
