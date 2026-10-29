@@ -9,9 +9,9 @@ export interface FairStatus {
   formattedTimeRemaining: string;
 }
 
-// Science fair schedule: 30/10/2026 from 08:00:00 to 10:00:00
-export const FAIR_START_DATE = new Date('2026-10-30T08:00:00');
-export const FAIR_END_DATE = new Date('2026-10-30T10:00:00');
+// Science fair schedule: 30/10/2026 from 08:30:00 to 11:30:00
+export const FAIR_START_DATE = new Date('2026-10-30T08:30:00');
+export const FAIR_END_DATE = new Date('2026-10-30T11:30:00');
 
 export function getDeviceFingerprint(): string {
   if (typeof window === 'undefined') return 'server-device';

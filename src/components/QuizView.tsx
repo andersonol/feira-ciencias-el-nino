@@ -245,10 +245,10 @@ export const QuizView: React.FC<QuizViewProps> = ({
               Feira de Ciências • 30/10/2026
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              O quiz estará disponível a partir das 08:00, durante a feira de ciências
+              O quiz estará disponível a partir das 08:30, durante a feira de ciências
             </h2>
             <p className="text-sm text-slate-600 mt-3 max-w-md mx-auto leading-relaxed">
-              O desafio ficará aberto exclusivamente entre as <strong>08:00 e 10:00 da manhã</strong> do dia 30/10/2026.
+              O desafio ficará aberto exclusivamente entre as <strong>08:30 e 11:30 da manhã</strong> do dia 30/10/2026.
             </p>
           </div>
 

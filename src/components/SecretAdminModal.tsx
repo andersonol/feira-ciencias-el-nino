@@ -80,10 +80,10 @@ export const SecretAdminModal: React.FC<SecretAdminModalProps> = ({
   const getModeName = (m: FairOverride) => {
     switch (m) {
       case 'bypass': return 'Liberado para Testes (Bypass)';
-      case 'before': return 'Simular: Antes da Feira (< 08:00)';
-      case 'during': return 'Simular: Durante a Feira (08:00 - 10:00)';
-      case 'after': return 'Simular: Após a Feira (> 10:00)';
-      case 'real': return 'Modo Relógio Oficial (30/10/2026)';
+      case 'before': return 'Simular: Antes da Feira (< 08:30)';
+      case 'during': return 'Simular: Durante a Feira (08:30 - 11:30)';
+      case 'after': return 'Simular: Após a Feira (> 11:30)';
+      case 'real': return 'Modo Relógio Oficial (30/10/2026 entre 08:30 e 11:30)';
     }
   };
 
@@ -162,8 +162,8 @@ export const SecretAdminModal: React.FC<SecretAdminModalProps> = ({
               >
                 <Clock className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold">Antes da Feira (&lt; 08:00)</div>
-                  <div className="text-[11px] text-slate-500 font-normal">Bloqueia quiz com aviso de abertura às 08:00</div>
+                  <div className="font-bold">Antes da Feira (&lt; 08:30)</div>
+                  <div className="text-[11px] text-slate-500 font-normal">Bloqueia quiz com aviso de abertura às 08:30</div>
                 </div>
               </button>
 
@@ -178,8 +178,8 @@ export const SecretAdminModal: React.FC<SecretAdminModalProps> = ({
               >
                 <Calendar className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold">Durante a Feira (08:00 - 10:00)</div>
-                  <div className="text-[11px] text-slate-500 font-normal">Quiz ativo com countdown para 10:00</div>
+                  <div className="font-bold">Durante a Feira (08:30 - 11:30)</div>
+                  <div className="text-[11px] text-slate-500 font-normal">Quiz ativo com countdown para 11:30</div>
                 </div>
               </button>
 
@@ -194,7 +194,7 @@ export const SecretAdminModal: React.FC<SecretAdminModalProps> = ({
               >
                 <RotateCcw className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-bold">Após a Feira (&gt; 10:00)</div>
+                  <div className="font-bold">Após a Feira (&gt; 11:30)</div>
                   <div className="text-[11px] text-slate-500 font-normal">Quiz finalizado, ranking mostra só o Pódio Top 3</div>
                 </div>
               </button>
@@ -210,7 +210,7 @@ export const SecretAdminModal: React.FC<SecretAdminModalProps> = ({
                     : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
                 }`}
               >
-                <span>Usar Relógio Real Oficial (30/10/2026 entre 08:00 e 10:00)</span>
+                <span>Usar Relógio Real Oficial (30/10/2026 entre 08:30 e 11:30)</span>
                 {currentOverride === 'real' && <Check className="w-4 h-4 text-amber-400" />}
               </button>
             </div>

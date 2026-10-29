@@ -59,7 +59,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
 
   const top3 = sortedRanking.slice(0, 3);
 
-  // CASE 1: Before Fair Start (< 08:00)
+  // CASE 1: Before Fair Start (< 08:30)
   if (fairStatus.status === 'before') {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4 text-center animate-in fade-in">
@@ -76,7 +76,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
               A feira de ciências ainda não foi iniciada
             </h2>
             <p className="text-sm text-slate-600 mt-3 max-w-md mx-auto leading-relaxed">
-              O quadro de classificação e as participações serão liberados pontualmente às <strong>08:00 da manhã</strong> do dia 30/10/2026.
+              O quadro de classificação e as participações serão liberados pontualmente às <strong>08:30 da manhã</strong> do dia 30/10/2026.
             </p>
           </div>
 
@@ -103,7 +103,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
     );
   }
 
-  // CASE 2: After Fair Finalization (> 10:00) -> Show ONLY the TOP 3 PODIUM
+  // CASE 2: After Fair Finalization (> 11:30) -> Show ONLY the TOP 3 PODIUM
   if (fairStatus.status === 'after') {
     return (
       <div className="max-w-3xl mx-auto py-8 sm:py-12 px-4 animate-in fade-in">
@@ -116,7 +116,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
             Pódio dos Campeões
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 mt-2 max-w-md mx-auto">
-            A feira foi encerrada às 10:00. Parabéns a todos os participantes! Abaixo estão os três melhores colocados do desafio.
+            A feira foi encerrada às 11:30. Parabéns a todos os participantes! Abaixo estão os três melhores colocados do desafio.
           </p>
         </div>
 
@@ -223,7 +223,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
     );
   }
 
-  // CASE 3: During Fair Time (08:00 - 10:00) -> Show Full List with Countdown above
+  // CASE 3: During Fair Time (08:30 - 11:30) -> Show Full List with Countdown above
   return (
     <div className="max-w-4xl mx-auto py-8 sm:py-12 px-4 animate-in fade-in">
       {/* Countdown Banner above list */}
